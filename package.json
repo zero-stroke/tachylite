@@ -1,0 +1,22 @@
+{
+  "name": "tachylite",
+  "version": "0.1.26",
+  "description": "A light Electron markdown and MDC viewer with editable preview, split, and raw modes.",
+  "main": "main.js",
+  "author": "",
+  "license": "MIT",
+  "scripts": {
+    "check": "node --check main.js && node --check preload.js && node --check renderer/app.js",
+    "pack:asar": "rm -rf /tmp/tachylite-asar-build /tmp/tachylite-app.asar && mkdir -p /tmp/tachylite-asar-build && rsync -a --exclude .git --exclude .gitignore --exclude README.md --exclude package-lock.json --exclude 'node_modules/**/test/' --exclude 'node_modules/**/tests/' --exclude 'node_modules/**/.yarn/' --exclude 'node_modules/**/*.map' --exclude 'node_modules/**/src/' ./ /tmp/tachylite-asar-build/ && npx --yes @electron/asar pack /tmp/tachylite-asar-build /tmp/tachylite-app.asar"
+  },
+  "overrides": {
+    "app-builder-lib": {
+      "@noble/hashes": "1.8.0"
+    }
+  },
+  "dependencies": {
+    "dompurify": "^3.2.6",
+    "markdown-it": "^14.1.0",
+    "turndown": "^7.2.0"
+  }
+}

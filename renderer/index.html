@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: file: https:; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none';">
+    <title>Tachylite</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="document-meta">
+          <div class="app-name">Tachylite</div>
+          <div class="document-name" id="documentName">Untitled.md</div>
+        </div>
+
+        <nav class="file-actions" aria-label="File actions">
+          <button type="button" class="toolbar-button" id="newButton">New Tab</button>
+          <button type="button" class="toolbar-button" id="newWindowButton">New Window</button>
+          <button type="button" class="toolbar-button" id="openButton">Open</button>
+          <button type="button" class="toolbar-button primary" id="saveButton">Save</button>
+          <button type="button" class="toolbar-button" id="saveAsButton">Save As</button>
+          <div class="export-menu" id="exportMenu">
+            <button type="button" class="toolbar-button export-button" id="exportButton" aria-haspopup="menu" aria-expanded="false">Export</button>
+            <div class="export-dropdown" id="exportDropdown" role="menu" hidden>
+              <button type="button" role="menuitem" data-export="html">HTML Document</button>
+              <button type="button" role="menuitem" data-export="pdf">PDF Document</button>
+              <button type="button" role="menuitem" data-export="markdown">Markdown Copy</button>
+              <button type="button" role="menuitem" data-export="text">Plain Text</button>
+            </div>
+          </div>
+          <button type="button" class="toolbar-button" id="findButton">Find</button>
+          <button type="button" class="toolbar-button" id="outlineButton" aria-pressed="false">Outline</button>
+        </nav>
+
+        <label class="theme-picker" for="themeSelect">
+          <span>Theme</span>
+          <select id="themeSelect" aria-label="Theme">
+            <option value="light">Light</option>
+            <option value="paper">Paper</option>
+            <option value="dusk">Dusk</option>
+            <option value="contrast">High Contrast</option>
+          </select>
+        </label>
+
+        <div class="mode-switch" role="group" aria-label="View mode">
+          <button type="button" class="mode-button" data-mode="preview" aria-pressed="true">Preview</button>
+          <button type="button" class="mode-button" data-mode="split" aria-pressed="false">Split</button>
+          <button type="button" class="mode-button" data-mode="raw" aria-pressed="false">Raw</button>
+        </div>
+      </header>
+
+      <section class="tabsbar" aria-label="Open documents">
+        <div class="tab-list" id="tabList" role="tablist" aria-label="Open markdown files"></div>
+        <button type="button" class="tab-strip-button" id="newTabButton" title="New tab" aria-label="New tab">+</button>
+      </section>
+
+      <form class="findbar" id="findBar" hidden>
+        <label for="findInput">Find</label>
+        <input type="search" id="findInput" autocomplete="off" spellcheck="false">
+        <span id="findStatus">0 / 0</span>
+        <button type="button" class="toolbar-button" id="findPrevButton">Previous</button>
+        <button type="button" class="toolbar-button" id="findNextButton">Next</button>
+        <button type="button" class="toolbar-button" id="findCloseButton">Close</button>
+      </form>
+
+      <main class="workspace mode-preview" id="workspace">
+        <aside class="pane outline-pane" id="outlinePane" aria-label="Document outline">
+          <div class="pane-header">
+            <span>Outline</span>
+            <span class="pane-subtitle" id="outlineCount">0 headings</span>
+          </div>
+          <nav class="outline-list" id="outlineList" aria-label="Headings"></nav>
+        </aside>
+
+        <section class="pane preview-pane" id="previewPane" aria-label="Rendered editable preview">
+          <div class="pane-header">
+            <span>Editable Preview</span>
+            <span class="pane-subtitle">Live rendered markdown</span>
+          </div>
+          <article id="previewEditor" class="markdown-surface" contenteditable="true" spellcheck="true" aria-label="Rendered markdown content"></article>
+        </section>
+
+        <section class="pane raw-pane" id="rawPane" aria-label="Raw markdown editor">
+          <div class="pane-header">
+            <span>Raw Markdown</span>
+            <span class="pane-subtitle">.md / .mdc</span>
+          </div>
+          <div class="raw-editor-wrap">
+            <div class="raw-highlight" id="rawHighlight" aria-hidden="true">
+              <div class="raw-highlight-content" id="rawHighlightContent"></div>
+            </div>
+            <textarea id="rawEditor" spellcheck="false" aria-label="Raw markdown content"></textarea>
+          </div>
+        </section>
+      </main>
+
+      <footer class="statusbar">
+        <span id="statusFile">No file loaded</span>
+        <span id="statusMode">Preview</span>
+        <span id="statusCounts">0 words</span>
+      </footer>
+    </div>
+
+    <script src="../node_modules/markdown-it/dist/markdown-it.min.js"></script>
+    <script src="../node_modules/dompurify/dist/purify.min.js"></script>
+    <script src="../node_modules/turndown/dist/turndown.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
