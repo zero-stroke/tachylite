@@ -1930,15 +1930,29 @@
   }
 
   function closeFind() {
+    const editor = state.find.scope === 'raw' ? elements.rawEditor : elements.previewEditor;
+    const scrollTop = editor.scrollTop;
+    const scrollLeft = editor.scrollLeft;
+
     state.find.open = false;
     elements.findBar.hidden = true;
     clearFindHighlights();
 
-    if (state.mode === 'raw') {
-      elements.rawEditor.focus();
-    } else {
-      elements.previewEditor.focus();
+    try {
+      editor.focus({ preventScroll: true });
+    } catch (_error) {
+      editor.focus();
     }
+
+    editor.scrollTop = scrollTop;
+    editor.scrollLeft = scrollLeft;
+    if (editor === elements.rawEditor) syncRawHighlightScroll();
+
+    requestAnimationFrame(() => {
+      editor.scrollTop = scrollTop;
+      editor.scrollLeft = scrollLeft;
+      if (editor === elements.rawEditor) syncRawHighlightScroll();
+    });
   }
 
   function fileNameFromPath(filePath) {
