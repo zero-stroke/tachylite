@@ -3,7 +3,6 @@ const fs = require('node:fs/promises');
 const path = require('node:path');
 const { pathToFileURL, fileURLToPath } = require('node:url');
 
-const supportedExtensions = new Set(['.md', '.markdown', '.mdc']);
 const APP_USER_MODEL_ID = 'com.tachylite.app';
 const ZOOM_LEVEL_MIN = -6;
 const ZOOM_LEVEL_MAX = 6;
@@ -31,24 +30,25 @@ const themes = [
   { id: 'contrast', label: 'High Contrast' }
 ];
 
-function isSupportedMarkdownPath(filePath) {
-  return supportedExtensions.has(path.extname(filePath).toLowerCase());
-}
-
 function normalizeTheme(theme) {
   return themes.some((item) => item.id === theme) ? theme : 'light';
 }
 
 function normalizeRecentFilePath(filePath) {
-  if (!filePath || !isSupportedMarkdownPath(filePath)) return null;
+  if (!filePath) return null;
   return path.normalize(filePath);
 }
 
 function findFilePathFromArgs(args) {
+  const exePath = path.normalize(process.execPath).toLowerCase();
+  const exeName = path.basename(process.execPath).toLowerCase();
+
   return args
     .find((arg) => {
       if (!arg || arg.startsWith('-')) return false;
-      return isSupportedMarkdownPath(arg);
+      const normalized = path.normalize(arg).toLowerCase();
+      if (normalized === exePath || normalized === exeName || path.extname(normalized) === '.asar') return false;
+      return true;
     });
 }
 
@@ -507,7 +507,7 @@ async function confirmWindowClose(event, win) {
 }
 
 async function openFileInWindow(filePath, win = activeAppWindow()) {
-  if (!isSupportedMarkdownPath(filePath)) return;
+  if (!filePath) return;
 
   if (!win || win.isDestroyed() || !win.webContents || win.webContents.isDestroyed()) {
     createWindow(filePath);
@@ -848,7 +848,7 @@ ipcMain.handle('file:initial', async (event) => {
   const initialPath = initialFilePaths.get(event.sender.id) || null;
   initialFilePaths.delete(event.sender.id);
 
-  if (!initialPath || !isSupportedMarkdownPath(initialPath)) {
+  if (!initialPath) {
     return { canceled: true };
   }
 
@@ -879,7 +879,7 @@ ipcMain.handle('file:open', async (event) => {
 });
 
 ipcMain.handle('file:reload-if-changed', async (_event, { filePath, diskMtimeMs }) => {
-  if (!filePath || !isSupportedMarkdownPath(filePath)) {
+  if (!filePath) {
     return { changed: false };
   }
 
